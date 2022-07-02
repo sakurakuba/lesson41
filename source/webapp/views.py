@@ -5,6 +5,12 @@ from django.shortcuts import render
 from .models import Article
 
 
+def article_view(request):
+    pk = request.GET.get('pk')
+    article = Article.objects.get(pk=pk)
+    return render(request, 'article_view.html', {'article': article})
+
+
 def index_view(request):
     articles = Article.objects.order_by('-created_at')
     context = {'articles': articles}
@@ -19,12 +25,12 @@ def index_view(request):
 def article_create_view(request):
     if request.method == 'GET':
         return render(request, 'article_create.html')
-    elif request.method == 'POST':
-        context = {
-            'title': request.POST.get('title'),
-            'content': request.POST.get('content'),
-            'author': request.POST.get('author')
-        }
+    else:
+        title = request.POST.get('title')
+        content = request.POST.get('content')
+        author = request.POST.get('author')
+        new_art = Article.objects.create(title=title, author=author, content=content)
+        context = {'article': new_art}
         return render(request, 'article_view.html', context)
 
 
