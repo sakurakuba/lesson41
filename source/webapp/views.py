@@ -2,13 +2,18 @@ from django.shortcuts import render
 
 
 # Create your views here.
+from .models import Article
+
+
 def index_view(request):
+    articles = Article.objects.order_by('-created_at')
+    context = {'articles': articles}
     # print(request.GET)
     # print(request.GET.getlist('my_param'))
     # print(request.GET.get('my_param', 10))
     # print(request.GET.get('other_param'))
     # print(request.GET.get('other_param', 10))
-    return render(request, "index.html")
+    return render(request, "index.html", context)
 
 
 def article_create_view(request):

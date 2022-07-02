@@ -7,7 +7,13 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}" >
 </head>
 <body>
+<a href="articles/add/">Create article</a>
 <h1> Hi there! </h1>
+{% for art in articles %}
+    <h3>{{ art.title}}</h3>
+    <p><a href="#">Details</a> </p>
+
+{% endfor %}
 
 </body>
 </html>
