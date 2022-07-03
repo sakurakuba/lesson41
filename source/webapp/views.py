@@ -1,12 +1,13 @@
-from django.shortcuts import render
-
+from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 # Create your views here.
 from .models import Article, STATUS_CHOICES
 
 
-def article_view(request):
-    pk = request.GET.get('pk')
+def article_view(request, pk):
+    # pk = request.GET.get('pk')
     article = Article.objects.get(pk=pk)
     return render(request, 'article_view.html', {'article': article})
 
@@ -32,7 +33,10 @@ def article_create_view(request):
         author = request.POST.get('author')
         new_art = Article.objects.create(title=title, author=author, content=content, status=status)
         context = {'article': new_art}
-        return render(request, 'article_view.html', context)
+        ## return HttpResponseRedirect(f"/article/{new_art.pk}")
+        # return render(request, 'article_view.html', context)
+        ### return HttpResponseRedirect(reverse('article_view', kwargs={'pk': new_art.pk}))
+        return redirect('article_view', pk=new_art.pk)
 
 
 
