@@ -1,14 +1,20 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponseRedirect, HttpResponseNotFound, Http404
 from django.urls import reverse
 
 # Create your views here.
 from .models import Article, STATUS_CHOICES
 
 
-def article_view(request, pk):
+def article_view(request, **kwargs):  # kwargs could be replaced directly with pk here
     # pk = request.GET.get('pk')
-    article = Article.objects.get(pk=pk)
+    pk = kwargs.get("pk")
+    # try:
+    #     article = Article.objects.get(pk=pk)
+    # except Article.DoesNotExist:
+    #     # return HttpResponseNotFound("Page not found")
+    #     raise Http404
+    article = get_object_or_404(Article, pk=pk)
     return render(request, 'article_view.html', {'article': article})
 
 
