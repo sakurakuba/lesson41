@@ -1,12 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" >
-</head>
-<body>
+{% extends "base.html" %}
+{% block nav %}
+<li class="nav-item">
+          <a class="nav-link" href="{% url "create_article" %}">Create Article</a>
+        </li>
+{% endblock %}
+
+{% block content %}
 <a href="{% url "create_article" %}">Create article</a>
 <h1> Hi there! </h1>
 {% for art in articles %}
@@ -14,6 +13,6 @@
     <p><a href="{% url "article_view" art.pk %}">Details</a> </p>
 
 {% endfor %}
+{% endblock %}
 
-</body>
-</html>
+

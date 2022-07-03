@@ -1,12 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Create</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %} Create Article {% endblock %}
+
+{% block content %}
 <h1>Create Article</h1>
-<form action="/articles/add/" method="post">
+<p action="/articles/add/" method="post">
     {% csrf_token %}
     <label>Status:</label><br/>
     <select name = 'status'>
@@ -23,6 +20,6 @@
     <input type="text" name="author"/><br/>
     <br/>
     <input type="submit" value="Send"/>
-</form>
-</body>
-</html>
+
+    <p><h5><a href="{% url "index" %}">Return to Main</a></h5></p>
+{% endblock %}

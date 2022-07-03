@@ -1,16 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>View</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %} Article view {% endblock %}
+{% block nav %}
+<li class="nav-item">
+          <a class="nav-link" href="{% url "create_article" %}">Create Article</a>
+        </li>
+{% endblock %}
+{% block content %}
 <h1>Future article:</h1>
     <h2 style="display:inline-block ">{{ article.title }}</h2>
     <p style="display: inline-block">{{ article.created_at|date:"Y-m-d G:i" }}</p>
     <p>{{ article.content }}</p>
     <p>By: {{ article.author }}</p>
 
-<h4><a href="{% url "index" %}">Return to Main</a></h4>
-</body>
-</html>
+<p><h5><a href="{% url "index" %}">Return to Main</a></h5></p>
+{% endblock %}
