@@ -6,7 +6,8 @@
 </head>
 <body>
 <h1>Future article:</h1>
-    <h2>{{ article.title }}</h2>
+    <h2 style="display:inline-block ">{{ article.title }}</h2>
+    <p style="display: inline-block">{{ article.created_at|date:"Y-m-d G:i" }}</p>
     <p>{{ article.content }}</p>
     <p>By: {{ article.author }}</p>
 </body>
