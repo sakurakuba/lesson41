@@ -8,6 +8,13 @@
 <h1>Create Article</h1>
 <form action="/articles/add/" method="post">
     {% csrf_token %}
+    <label>Status:</label><br/>
+    <select name = 'status'>
+    {% for val, status in statuses %}
+       <option value="{{ val }}">{{ status }}</option>
+    {% endfor %}
+        </select>
+    <br/>
     <label>Title:</label><br/>
     <input type="text" name="title"/><br/>
     <label>Text:</label><br/>
