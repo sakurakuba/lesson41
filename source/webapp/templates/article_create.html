@@ -3,7 +3,7 @@
 
 {% block content %}
 <h1>Create Article</h1>
-<p action="/articles/add/" method="post">
+<form action="/articles/add/" method="post">
     {% csrf_token %}
     <label>Status:</label><br/>
     <select name = 'status'>
@@ -22,4 +22,5 @@
     <input type="submit" value="Send"/>
 
     <p><h5><a href="{% url "index" %}">Return to Main</a></h5></p>
+</form>
 {% endblock %}
