@@ -35,16 +35,25 @@ def article_create_view(request):
     else:
         title = request.POST.get('title')
         content = request.POST.get('content')
-        status = request.POST.get('status')
+        ## status = request.POST.get('status')
         author = request.POST.get('author')
-        new_art = Article.objects.create(title=title, author=author, content=content, status=status)
+        new_art = Article.objects.create(title=title, author=author, content=content)  # status=status)
         context = {'article': new_art}
         ## return HttpResponseRedirect(f"/article/{new_art.pk}")
         # return render(request, 'article_view.html', context)
         ### return HttpResponseRedirect(reverse('article_view', kwargs={'pk': new_art.pk}))
         return redirect('article_view', pk=new_art.pk)
 
-
+def update_article(request, pk):
+    article = get_object_or_404(Article, pk=pk)
+    if request.method == 'GET':
+        return render(request, 'update.html', {'article': article})
+    else:
+        article.title = request.POST.get('title')
+        article.content = request.POST.get('content')
+        article.author = request.POST.get('author')
+        article.save()
+        return redirect('article_view', pk=article.pk)
 
 
 

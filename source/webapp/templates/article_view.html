@@ -2,8 +2,14 @@
 {% block title %} Article view {% endblock %}
 {% block nav %}
 <li class="nav-item">
-          <a class="nav-link" href="{% url "create_article" %}">Create Article</a>
-        </li>
+    <a class="nav-link" href="{% url "create_article" %}">Create Article</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url "update_article" article.pk %}">Update Article</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="#">Delete Article</a>
+</li>
 {% endblock %}
 {% block content %}
 <h1>Future article:</h1>
