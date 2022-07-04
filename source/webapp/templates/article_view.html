@@ -8,7 +8,9 @@
     <a class="nav-link" href="{% url "update_article" article.pk %}">Update Article</a>
 </li>
 <li class="nav-item">
-    <a class="nav-link" href="{% url "delete_article" article.pk %}">Delete Article</a>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#articleDeleteModal">
+  Delete
+</button>
 </li>
 {% endblock %}
 {% block content %}
@@ -19,4 +21,24 @@
     <p>By: {{ article.author }}</p>
 
 <p><h5><a href="{% url "index" %}">Return to Main</a></h5></p>
+<div class="modal fade" id="articleDeleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <h2>Are you sure you want to delete this article {{ article.title}}? </h2>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <form action="{% url 'delete_article' article.pk %}" method="post">
+            {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Yes</button>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
