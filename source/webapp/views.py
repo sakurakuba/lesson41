@@ -55,7 +55,13 @@ def update_article(request, pk):
         article.save()
         return redirect('article_view', pk=article.pk)
 
-
+def delete_article(request, pk):
+    article = get_object_or_404(Article, pk=pk)
+    if request.method == 'GET':
+        return render(request, 'delete.html', {'article': article})
+    else:
+        article.delete()
+        return redirect('index')
 
 
 

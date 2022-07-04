@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from webapp.views import index_view, article_create_view, article_view, update_article
+from webapp.views import index_view, article_create_view, article_view, update_article, delete_article
 
 
 urlpatterns = [
@@ -23,6 +23,7 @@ urlpatterns = [
     path('', index_view, name='index'),
     path('articles/add/', article_create_view, name='create_article'),
     path('article/<int:pk>/', article_view, name='article_view'),
-    path('article/<int:pk>/update', update_article, name='update_article')
+    path('article/<int:pk>/update', update_article, name='update_article'),
+    path('article/<int:pk>/delete', delete_article, name='delete_article')
 
 ]

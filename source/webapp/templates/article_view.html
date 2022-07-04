@@ -8,7 +8,7 @@
     <a class="nav-link" href="{% url "update_article" article.pk %}">Update Article</a>
 </li>
 <li class="nav-item">
-    <a class="nav-link" href="#">Delete Article</a>
+    <a class="nav-link" href="{% url "delete_article" article.pk %}">Delete Article</a>
 </li>
 {% endblock %}
 {% block content %}
