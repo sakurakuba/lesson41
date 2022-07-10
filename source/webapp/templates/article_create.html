@@ -4,7 +4,7 @@
 {% block content %}
 <h1>Create Article</h1>
 <form action="/articles/add/" method="post">
-    {% include "partial/form.html" with bu%}
+    {% include "partial/form.html" %}
 
     <input type="submit" value="Send"/>
     <p><h5><a href="{% url "index" %}">Return to Main</a></h5></p>
