@@ -4,23 +4,9 @@
 {% block content %}
 <h1>Update Article</h1>
 <form action="/articles/add/" method="post">
-    {% csrf_token %}
-    <label>Status:</label><br/>
-    <select name = 'status'>
-    {% for val, status in statuses %}
-       <option value="{{ val }}">{{ status }}</option>
-    {% endfor %}
-        </select>
-    <br/>
-    <label>Title:</label><br/>
-    <input type="text" name="title" value="{{ article.title }}"/><br/>
-    <label>Text:</label><br/>
-    <textarea name="content">{{ article.content }}</textarea><br/>
-    <label>Author:</label><br/>
-    <input type="text" name="author" value="{{ article.title }}"/><br/>
-    <br/>
-    <input type="submit" value="Update"/>
+    {% include "partial/form.html" %}
 
+    <input type="submit" value="Update"/>
     <p><h5><a href="{% url "index" %}">Return to Main</a></h5></p>
 </form>
 {% endblock %}
