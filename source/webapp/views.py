@@ -3,6 +3,8 @@ from django.http import HttpResponseRedirect, HttpResponseNotFound, Http404
 from django.urls import reverse
 
 # Create your views here.
+from django.views import View
+
 from .models import Article, STATUS_CHOICES
 
 
@@ -18,15 +20,16 @@ def article_view(request, **kwargs):  # kwargs could be replaced directly with p
     return render(request, 'article_view.html', {'article': article})
 
 
-def index_view(request):
-    articles = Article.objects.order_by('-created_at')
-    context = {'articles': articles}
-    # print(request.GET)
-    # print(request.GET.getlist('my_param'))
-    # print(request.GET.get('my_param', 10))
-    # print(request.GET.get('other_param'))
-    # print(request.GET.get('other_param', 10))
-    return render(request, "index.html", context)
+class IndexView(View):
+    def get(self, request, *args, **kwargs):
+        articles = Article.objects.order_by('-created_at')
+        context = {'articles': articles}
+        # print(request.GET)
+        # print(request.GET.getlist('my_param'))
+        # print(request.GET.get('my_param', 10))
+        # print(request.GET.get('other_param'))
+        # print(request.GET.get('other_param', 10))
+        return render(request, "index.html", context)
 
 
 def article_create_view(request):
