@@ -19,7 +19,13 @@
     <p style="display: inline-block">{{ article.created_at|date:"Y-m-d G:i" }}</p>
     <p>{{ article.content }}</p>
     <p>By: {{ article.author }}</p>
-
+<h3>Comments</h3>
+{% for com in article.comments.all %}
+<p>{{ com.text }}</p>
+{% empty %}
+no comments
+{% endfor %}
+q
 <p><h5><a href="{% url "index" %}">Return to Main</a></h5></p>
 <div class="modal fade" id="articleDeleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
