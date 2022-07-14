@@ -14,6 +14,7 @@
 </li>
 {% endblock %}
 {% block content %}
+{{ test }}
 <h1>Future article:</h1>
     <h2 style="display:inline-block ">{{ article.title }}</h2>
     <p style="display: inline-block">{{ article.created_at|date:"Y-m-d G:i" }}</p>

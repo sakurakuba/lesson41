@@ -15,15 +15,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from webapp.views import IndexView, article_create_view, article_view, update_article, delete_article
+from django.views.generic import RedirectView
+from webapp.views import ArticleView, IndexView, article_create_view, update_article, delete_article
 
+from webapp.views import MyRedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', IndexView.as_view(), name='index'),
+    path('articles/', RedirectView.as_view(pattern_name='index')),
     path('articles/add/', article_create_view, name='create_article'),
-    path('article/<int:pk>/', article_view, name='article_view'),
+    path('article/<int:pk>/', ArticleView.as_view(extra_context={"test": 7}), name='article_view'),
     path('article/<int:pk>/update', update_article, name='update_article'),
-    path('article/<int:pk>/delete', delete_article, name='delete_article')
+    path('article/<int:pk>/delete', delete_article, name='delete_article'),
+    path('google/', MyRedirectView.as_view())
 
 ]

@@ -4,20 +4,21 @@ from django.urls import reverse
 
 # Create your views here.
 from django.views import View
+from django.views.generic import TemplateView, RedirectView
 
 from .models import Article, STATUS_CHOICES
 
 
-def article_view(request, **kwargs):  # kwargs could be replaced directly with pk here
-    # pk = request.GET.get('pk')
-    pk = kwargs.get("pk")
-    # try:
-    #     article = Article.objects.get(pk=pk)
-    # except Article.DoesNotExist:
-    #     # return HttpResponseNotFound("Page not found")
-    #     raise Http404
-    article = get_object_or_404(Article, pk=pk)
-    return render(request, 'article_view.html', {'article': article})
+# def article_view(request, **kwargs):  # kwargs could be replaced directly with pk here
+#     # pk = request.GET.get('pk')
+#     pk = kwargs.get("pk")
+#     # try:
+#     #     article = Article.objects.get(pk=pk)
+#     # except Article.DoesNotExist:
+#     #     # return HttpResponseNotFound("Page not found")
+#     #     raise Http404
+#     article = get_object_or_404(Article, pk=pk)
+#     return render(request, 'article_view.html', {'article': article})
 
 
 class IndexView(View):
@@ -30,6 +31,23 @@ class IndexView(View):
         # print(request.GET.get('other_param'))
         # print(request.GET.get('other_param', 10))
         return render(request, "index.html", context)
+
+
+class ArticleView(TemplateView):
+    template_name = 'article_view.html'
+
+    # def get_template_names(self):
+    #     return "article_view.html"
+
+    def get_context_data(self, **kwargs):
+        pk = kwargs.get("pk")
+        article = get_object_or_404(Article, pk=pk)
+        kwargs["article"] = article
+        return super().get_context_data(**kwargs)
+
+
+class MyRedirectView(RedirectView):
+    url = "https://google.com"
 
 
 def article_create_view(request):
@@ -47,6 +65,7 @@ def article_create_view(request):
         ### return HttpResponseRedirect(reverse('article_view', kwargs={'pk': new_art.pk}))
         return redirect('article_view', pk=new_art.pk)
 
+
 def update_article(request, pk):
     article = get_object_or_404(Article, pk=pk)
     if request.method == 'GET':
@@ -57,6 +76,7 @@ def update_article(request, pk):
         article.author = request.POST.get('author')
         article.save()
         return redirect('article_view', pk=article.pk)
+
 
 def delete_article(request, pk):
     article = get_object_or_404(Article, pk=pk)
