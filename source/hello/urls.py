@@ -16,9 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.views.generic import RedirectView
-from webapp.views import ArticleView, IndexView, article_create_view, update_article, delete_article
+from webapp.views import ArticleView, IndexView, UpdateArticle, article_create_view, delete_article
 
 from webapp.views import MyRedirectView
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,7 +27,7 @@ urlpatterns = [
     path('articles/', RedirectView.as_view(pattern_name='index')),
     path('articles/add/', article_create_view, name='create_article'),
     path('article/<int:pk>/', ArticleView.as_view(extra_context={"test": 7}), name='article_view'),
-    path('article/<int:pk>/update', update_article, name='update_article'),
+    path('article/<int:pk>/update', UpdateArticle.as_view(), name='update_article'),
     path('article/<int:pk>/delete', delete_article, name='delete_article'),
     path('google/', MyRedirectView.as_view())
 

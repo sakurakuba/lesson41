@@ -7,7 +7,7 @@ from django.views import View
 from django.views.generic import TemplateView, RedirectView
 
 from .forms import ArticleForm
-from .models import Article, STATUS_CHOICES
+from .models import Article
 
 
 # def article_view(request, **kwargs):  # kwargs could be replaced directly with pk here
@@ -49,7 +49,7 @@ class MyRedirectView(RedirectView):
 def article_create_view(request):
     if request.method == 'GET':
         form = ArticleForm()
-        return render(request, 'article_create.html', {'statuses': STATUS_CHOICES, 'form': form})
+        return render(request, 'article_create.html', {'form': form})
     else:
         form = ArticleForm(data=request.POST)
         if form.is_valid():
@@ -62,26 +62,32 @@ def article_create_view(request):
         return render(request, 'article_create.html', {'form': form})
 
 
+class UpdateArticle(View):
+    def dispatch(self, request, *args, **kwargs):
+        pk = kwargs.get("pk")
+        self.article = get_object_or_404(Article, pk=pk)
+        return super().dispatch(request, *args, **kwargs)
 
-def update_article(request, pk):
-    article = get_object_or_404(Article, pk=pk)
-    if request.method == 'GET':
-        form = ArticleForm(initial={
-            'title': article.title,
-            'author': article.author,
-            'content': article.content,
-            'status': article.status
-        })
-        return render(request, 'update.html', {'form': form})
-    else:
+    def get(self, request, *args, **kwargs):
+        if request.method == 'GET':
+            form = ArticleForm(initial={
+                'title': self.article.title,
+                'author': self.article.author,
+                'content': self.article.content,
+                'status': self.article.status
+            })
+            return render(request, 'update.html', {'form': form})
+
+    def post(self, request, *args, **kwargs):
         form = ArticleForm(data=request.POST)
         if form.is_valid():
-            article.title = form.cleaned_data.get('title')
-            article.content = form.cleaned_data.get('content')
-            article.author = form.cleaned_data.get('author')
-            article.status = form.cleaned_data.get('status')
-            article.save()
-            return redirect('article_view', pk=article.pk)
+            self.article.title = form.cleaned_data.get('title')
+            self.article.content = form.cleaned_data.get('content')
+            self.article.author = form.cleaned_data.get('author')
+            self.article.status = form.cleaned_data.get('status')
+            self.article.save()
+            return redirect('article_view', pk=self.article.pk)
+        return render(request, 'update.html', {'form': form})
 
 
 def delete_article(request, pk):
