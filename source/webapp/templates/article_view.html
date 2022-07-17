@@ -15,18 +15,18 @@
 {% endblock %}
 {% block content %}
 {{ test }}
-<h1>Future article:</h1>
-    <p><h2>{{ article.title }}</h2></p>
+<h4>Article:</h4>
+    <p><h4>{{ article.title }}</h4></p>
     <p>Created: {{ article.created_at|date:"Y-m-d G:i" }}</p>
     <p>Content: {{ article.content }}</p>
     <p>By: {{ article.author }}</p>
-<h3>Comments</h3>
+<h4>Comments</h4>
 {% for com in article.comments.all %}
 <p>{{ com.text }}</p>
 {% empty %}
 no comments
 {% endfor %}
-q
+
 <p><h5><a href="{% url "index" %}">Return to Main</a></h5></p>
 <div class="modal fade" id="articleDeleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">

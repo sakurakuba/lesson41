@@ -26,7 +26,7 @@ urlpatterns = [
     path('', IndexView.as_view(), name='index'),
     path('articles/', RedirectView.as_view(pattern_name='index')),
     path('articles/add/', article_create_view, name='create_article'),
-    path('article/<int:pk>/', ArticleView.as_view(extra_context={"test": 7}), name='article_view'),
+    path('article/<int:pk>/', ArticleView.as_view(extra_context={"test": "extra content"}), name='article_view'),
     path('article/<int:pk>/update', UpdateArticle.as_view(), name='update_article'),
     path('article/<int:pk>/delete', delete_article, name='delete_article'),
     path('google/', MyRedirectView.as_view())
