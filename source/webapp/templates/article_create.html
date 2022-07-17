@@ -4,6 +4,7 @@
 {% block content %}
 <h1>Create Article</h1>
 <form action="/articles/add/" method="post">
+    {% csrf_token %}
     {% include "partial/form.html" %}
 
     <input type="submit" value="Send"/>

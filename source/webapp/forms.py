@@ -13,3 +13,7 @@ class ArticleForm(forms.ModelForm):
     class Meta:
         model = Article
         fields = "__all__"
+
+
+class SearchForm(forms.Form):
+    search = forms.CharField(max_length=50, required=False, label='Search')

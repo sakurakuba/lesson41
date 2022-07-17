@@ -1,12 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponseRedirect, HttpResponseNotFound, Http404
-from django.urls import reverse
-
-# Create your views here.
 from django.views import View
 from django.views.generic import TemplateView, RedirectView
 
-from .forms import ArticleForm
+from .forms import ArticleForm, SearchForm
 from .models import Article
 
 
@@ -24,16 +20,18 @@ from .models import Article
 
 class IndexView(View):
     def get(self, request, *args, **kwargs):
-        articles = Article.objects.order_by('-created_at')
-        context = {'articles': articles}
+        search_form = SearchForm(data=request.GET)
+        articles = Article.objects.all()
+        if search_form.is_valid():
+            search_value = search_form.cleaned_data.get("search")
+            articles = articles.filter(title__contains=search_value)
+        articles = articles.order_by('-created_at')
+        context = {'articles': articles, 'form': search_form}
         return render(request, "index.html", context)
 
 
 class ArticleView(TemplateView):
     template_name = 'article_view.html'
-
-    # def get_template_names(self):
-    #     return "article_view.html"
 
     def get_context_data(self, **kwargs):
         pk = kwargs.get("pk")

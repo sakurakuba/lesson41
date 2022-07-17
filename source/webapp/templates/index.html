@@ -6,8 +6,13 @@
 {% endblock %}
 
 {% block content %}
-<a href="{% url "create_article" %}">Create article</a>
-<h1> Hi there! </h1>
+<form action="" method="get">
+    {% include "partial/form.html" %}
+    <input type="submit" value="Search"/>
+</form>
+
+<h4> Hi there! </h4>
+
 {% for art in articles %}
     <h3>{{ art.title}}</h3> <span>{{ art.status }} - {{ art.get_status_display }}</span>
     <p><a href="{% url "article_view" art.pk %}">Details</a> </p>
