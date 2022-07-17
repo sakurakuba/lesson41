@@ -17,6 +17,7 @@ class Article(BaseModel):
     author = models.CharField(max_length=50, verbose_name='Author', default='Unknown')
     content = models.TextField(max_length=3000, verbose_name='Content')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, verbose_name='Status', default=STATUS_CHOICES[0][0])
+    tags = models.ManyToManyField("webapp.Tag", related_name="articles", through="webapp.ArticleTag", through_fields=("article", "tag"), blank=True)
 
     def __str__(self):
         return f"{self.id}. {self.title}: {self.author}"
@@ -41,3 +42,18 @@ class Comment(BaseModel):
         verbose_name_plural = "comments"
 
 
+class Tag(BaseModel):
+    name = models.CharField(max_length=31, verbose_name='Тег')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = "tags"
+        verbose_name = "Tag"
+        verbose_name_plural = "Tags"
+
+
+class ArticleTag(models.Model):
+    article = models.ForeignKey("webapp.Article", related_name="article_tags", on_delete=models.CASCADE, verbose_name="Article")
+    tag = models.ForeignKey("webapp.Tag", related_name="tag_articles", on_delete=models.CASCADE, verbose_name="Tag")
