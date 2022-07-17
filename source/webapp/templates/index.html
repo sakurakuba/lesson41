@@ -10,12 +10,12 @@
     {% include "partial/form.html" %}
     <input type="submit" value="Search"/>
 </form>
-
+<br/>
 <h4> Hi there! </h4>
 
 {% for art in articles %}
-    <h3>{{ art.title}}</h3> <span>{{ art.status }} - {{ art.get_status_display }}</span>
-    <p><a href="{% url "article_view" art.pk %}">Details</a> </p>
+    <h3>{{ art.title}}</h3>
+    <p><a href="{% url 'article_view' art.pk %}">Details</a> </p>
 
 {% endfor %}
 {% endblock %}
