@@ -51,11 +51,13 @@ def article_create_view(request):
     else:
         form = ArticleForm(data=request.POST)
         if form.is_valid():
+            tags = form.cleaned_data.pop("tags")
             title = form.cleaned_data.get('title')
             author = form.cleaned_data.get('author')
             content = form.cleaned_data.get('content')
             status = form.cleaned_data.get('status')
             new_art = Article.objects.create(title=title, author=author, content=content, status=status)
+            new_art.tags.set(tags)
             return redirect('article_view', pk=new_art.pk)
         return render(request, 'article_create.html', {'form': form})
 
@@ -72,7 +74,8 @@ class UpdateArticle(View):
                 'title': self.article.title,
                 'author': self.article.author,
                 'content': self.article.content,
-                'status': self.article.status
+                'status': self.article.status,
+                'tags': self.article.tags.all()
             })
             return render(request, 'update.html', {'form': form})
 
@@ -83,6 +86,7 @@ class UpdateArticle(View):
             self.article.content = form.cleaned_data.get('content')
             self.article.author = form.cleaned_data.get('author')
             self.article.status = form.cleaned_data.get('status')
+            self.article.tags.set(form.cleaned_data.get('tags'))
             self.article.save()
             return redirect('article_view', pk=self.article.pk)
         return render(request, 'update.html', {'form': form})

@@ -26,6 +26,14 @@
 {% empty %}
 no comments
 {% endfor %}
+<br/>
+
+<h4>Tags:</h4>
+{% for tag in article.tags.all %}
+<p>{{ tag.name }}</p>
+{% empty %}
+no tags
+{% endfor %}
 
 <p><h5><a href="{% url "index" %}">Return to Main</a></h5></p>
 <div class="modal fade" id="articleDeleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
