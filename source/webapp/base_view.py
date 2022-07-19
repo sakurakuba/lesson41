@@ -5,7 +5,7 @@ from webapp.forms import ArticleForm
 from webapp.models import Article
 
 
-class FormView(View):
+class CustomFormView(View):
     form_class = None
     template_name = None
     redirect_url = ""
@@ -35,7 +35,7 @@ class FormView(View):
         return render(self.request, self.template_name, context)
 
 
-class CreateArticle(FormView):
+class CreateArticle(CustomFormView):
     form_class = ArticleForm
     template_name = "article_create.html"
 

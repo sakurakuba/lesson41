@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.views import View
-from django.views.generic import TemplateView, RedirectView
+from django.views.generic import TemplateView, RedirectView, FormView
 
-from .base_view import FormView
+from .base_view import CustomFormView
 from .forms import ArticleForm, SearchForm
 from .models import Article
 
@@ -63,7 +64,7 @@ class MyRedirectView(RedirectView):
 #         return render(request, 'article_create.html', {'form': form})
 
 
-class CreateArticle(FormView):
+class CreateArticle(CustomFormView):
     form_class = ArticleForm
     template_name = "article_create.html"
 
@@ -77,34 +78,73 @@ class CreateArticle(FormView):
         return redirect('article_view', pk=self.article.pk)
 
 
-class UpdateArticle(View):
+class UpdArticle(FormView):
+    form_class = ArticleForm
+    template_name = "update.html"
+
     def dispatch(self, request, *args, **kwargs):
-        pk = kwargs.get("pk")
-        self.article = get_object_or_404(Article, pk=pk)
+        self.article = self.get_object()
         return super().dispatch(request, *args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
-        if request.method == 'GET':
-            form = ArticleForm(initial={
-                'title': self.article.title,
-                'author': self.article.author,
-                'content': self.article.content,
-                'status': self.article.status,
-                'tags': self.article.tags.all()
-            })
-            return render(request, 'update.html', {'form': form})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['article'] = self.article
+        return context
 
-    def post(self, request, *args, **kwargs):
-        form = ArticleForm(data=request.POST)
-        if form.is_valid():
-            self.article.title = form.cleaned_data.get('title')
-            self.article.content = form.cleaned_data.get('content')
-            self.article.author = form.cleaned_data.get('author')
-            self.article.status = form.cleaned_data.get('status')
-            self.article.tags.set(form.cleaned_data.get('tags'))
-            self.article.save()
-            return redirect('article_view', pk=self.article.pk)
-        return render(request, 'update.html', {'form': form})
+    def get_success_url(self):
+        return reverse("article_view", kwargs={"pk": self.article.pk})
+
+    def get_object(self):
+        return get_object_or_404(Article, pk=self.kwargs.get('pk'))
+
+    def get_initial(self):
+        initial = {}
+        for key in 'title', 'content', 'author', 'status':
+            initial[key] = getattr(self.article, key)
+        initial['tags'] = self.article.tags.all()
+        return initial
+
+    def form_valid(self, form):
+        tags = form.cleaned_data.pop('tags')
+        ##self.article.objects.update(**form.cleaned_data)
+        for key, value in form.cleaned_data.items():
+            setattr(self.article, key, value)
+        self.article.save()
+        self.article.tags.set(tags)
+        return super().form_valid(form)
+
+
+
+
+
+# class UpdateArticle(View):
+#     def dispatch(self, request, *args, **kwargs):
+#         pk = kwargs.get("pk")
+#         self.article = get_object_or_404(Article, pk=pk)
+#         return super().dispatch(request, *args, **kwargs)
+#
+#     def get(self, request, *args, **kwargs):
+#         if request.method == 'GET':
+#             form = ArticleForm(initial={
+#                 'title': self.article.title,
+#                 'author': self.article.author,
+#                 'content': self.article.content,
+#                 'status': self.article.status,
+#                 'tags': self.article.tags.all()
+#             })
+#             return render(request, 'update.html', {'form': form})
+#
+#     def post(self, request, *args, **kwargs):
+#         form = ArticleForm(data=request.POST)
+#         if form.is_valid():
+#             self.article.title = form.cleaned_data.get('title')
+#             self.article.content = form.cleaned_data.get('content')
+#             self.article.author = form.cleaned_data.get('author')
+#             self.article.status = form.cleaned_data.get('status')
+#             self.article.tags.set(form.cleaned_data.get('tags'))
+#             self.article.save()
+#             return redirect('article_view', pk=self.article.pk)
+#         return render(request, 'update.html', {'form': form})
 
 
 def delete_article(request, pk):
