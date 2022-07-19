@@ -69,9 +69,10 @@ class CreateArticle(CustomFormView):
     template_name = "article_create.html"
 
     def form_valid(self, form):
-        tags = form.cleaned_data.pop("tags")
-        self.article = Article.objects.create(**form.cleaned_data)
-        self.article.tags.set(tags)
+        # tags = form.cleaned_data.pop("tags")
+        # self.article = Article.objects.create(**form.cleaned_data)
+        # self.article.tags.set(tags)
+        self.article = form.save()
         return super().form_valid(form)
 
     def get_redirect_url(self):
@@ -97,20 +98,25 @@ class UpdArticle(FormView):
     def get_object(self):
         return get_object_or_404(Article, pk=self.kwargs.get('pk'))
 
-    def get_initial(self):
-        initial = {}
-        for key in 'title', 'content', 'author', 'status':
-            initial[key] = getattr(self.article, key)
-        initial['tags'] = self.article.tags.all()
-        return initial
+    # def get_initial(self):
+    #     initial = {}
+    #     for key in 'title', 'content', 'author', 'status':
+    #         initial[key] = getattr(self.article, key)
+    #     initial['tags'] = self.article.tags.all()
+    #     return initial
+
+    def get_form_kwargs(self):
+        form_kwargs = super().get_form_kwargs()
+        form_kwargs['instance'] = self.article
+        return form_kwargs
 
     def form_valid(self, form):
         tags = form.cleaned_data.pop('tags')
-        ##self.article.objects.update(**form.cleaned_data)
-        for key, value in form.cleaned_data.items():
-            setattr(self.article, key, value)
-        self.article.save()
-        self.article.tags.set(tags)
+        # ##self.article.objects.update(**form.cleaned_data)
+        # for key, value in form.cleaned_data.items():
+        #     setattr(self.article, key, value)
+        self.article = form.save()
+        ##self.article.tags.set(tags)
         return super().form_valid(form)
 
 
