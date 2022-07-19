@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic import TemplateView, RedirectView
 
+from .base_view import FormView
 from .forms import ArticleForm, SearchForm
 from .models import Article
 
@@ -44,22 +45,36 @@ class MyRedirectView(RedirectView):
     url = "https://google.com"
 
 
-def article_create_view(request):
-    if request.method == 'GET':
-        form = ArticleForm()
-        return render(request, 'article_create.html', {'form': form})
-    else:
-        form = ArticleForm(data=request.POST)
-        if form.is_valid():
-            tags = form.cleaned_data.pop("tags")
-            title = form.cleaned_data.get('title')
-            author = form.cleaned_data.get('author')
-            content = form.cleaned_data.get('content')
-            status = form.cleaned_data.get('status')
-            new_art = Article.objects.create(title=title, author=author, content=content, status=status)
-            new_art.tags.set(tags)
-            return redirect('article_view', pk=new_art.pk)
-        return render(request, 'article_create.html', {'form': form})
+# def article_create_view(request):
+#     if request.method == 'GET':
+#         form = ArticleForm()
+#         return render(request, 'article_create.html', {'form': form})
+#     else:
+#         form = ArticleForm(data=request.POST)
+#         if form.is_valid():
+#             tags = form.cleaned_data.pop("tags")
+#             title = form.cleaned_data.get('title')
+#             author = form.cleaned_data.get('author')
+#             content = form.cleaned_data.get('content')
+#             status = form.cleaned_data.get('status')
+#             new_art = Article.objects.create(title=title, author=author, content=content, status=status)
+#             new_art.tags.set(tags)
+#             return redirect('article_view', pk=new_art.pk)
+#         return render(request, 'article_create.html', {'form': form})
+
+
+class CreateArticle(FormView):
+    form_class = ArticleForm
+    template_name = "article_create.html"
+
+    def form_valid(self, form):
+        tags = form.cleaned_data.pop("tags")
+        self.article = Article.objects.create(**form.cleaned_data)
+        self.article.tags.set(tags)
+        return super().form_valid(form)
+
+    def get_redirect_url(self):
+        return redirect('article_view', pk=self.article.pk)
 
 
 class UpdateArticle(View):

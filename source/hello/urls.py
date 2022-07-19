@@ -16,16 +16,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.views.generic import RedirectView
-from webapp.views import ArticleView, IndexView, UpdateArticle, article_create_view, delete_article
+from webapp.views import ArticleView, IndexView, UpdateArticle, delete_article
 
 from webapp.views import MyRedirectView
 
+from webapp.base_view import CreateArticle
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', IndexView.as_view(), name='index'),
     path('articles/', RedirectView.as_view(pattern_name='index')),
-    path('articles/add/', article_create_view, name='create_article'),
+    path('articles/add/', CreateArticle.as_view(), name='create_article'),
     path('article/<int:pk>/', ArticleView.as_view(extra_context={"test": "extra content"}), name='article_view'),
     path('article/<int:pk>/update', UpdateArticle.as_view(), name='update_article'),
     path('article/<int:pk>/delete', delete_article, name='delete_article'),
