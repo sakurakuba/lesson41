@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views import View
+from django.views.generic import TemplateView
 
 from webapp.forms import ArticleForm
 from webapp.models import Article
@@ -47,5 +48,21 @@ class CreateArticle(CustomFormView):
 
     def get_redirect_url(self):
         return redirect('article_view', pk=self.article.pk)
+
+
+
+class CustomListView(TemplateView):
+    model = None
+    context_key = "objects"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context[self.context_key] = self.get_objects()
+        return context
+
+    def get_objects(self):
+        return self.model.objects.all()
+
+
 
 

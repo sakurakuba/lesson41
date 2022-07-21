@@ -18,6 +18,11 @@
     <p><a href="{% url 'article_view' art.pk %}">Details</a> </p>
 
 {% endfor %}
+
+{% if is_paginated %}
+    {% include "partial/pagination.html" %}
+
+{% endif %}
 {% endblock %}
 
 

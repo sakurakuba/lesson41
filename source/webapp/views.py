@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views import View
-from django.views.generic import TemplateView, RedirectView, FormView
+from django.views.generic import TemplateView, RedirectView, FormView, ListView
 
-from .base_view import CustomFormView
+from .base_view import CustomFormView, CustomListView
 from .forms import ArticleForm, SearchForm
 from .models import Article
 
@@ -20,16 +20,38 @@ from .models import Article
 #     return render(request, 'article_view.html', {'article': article})
 
 
-class IndexView(View):
-    def get(self, request, *args, **kwargs):
-        search_form = SearchForm(data=request.GET)
-        articles = Article.objects.all()
-        if search_form.is_valid():
-            search_value = search_form.cleaned_data.get("search")
-            articles = articles.filter(title__contains=search_value)
-        articles = articles.order_by('-created_at')
-        context = {'articles': articles, 'form': search_form}
-        return render(request, "index.html", context)
+# class IndexView(View):
+#     def get(self, request, *args, **kwargs):
+#         search_form = SearchForm(data=request.GET)
+#         articles = Article.objects.all()
+#         if search_form.is_valid():
+#             search_value = search_form.cleaned_data.get("search")
+#             articles = articles.filter(title__contains=search_value)
+#         articles = articles.order_by('-created_at')
+#         context = {'articles': articles, 'form': search_form}
+#         return render(request, "index.html", context)
+
+
+class IndexView(ListView):
+    model = Article
+    template_name = "index.html"
+    context_object_name = "articles"
+    ordering = ('-created_at',)
+    paginate_by = 4
+    paginate_orphans = 1
+
+    # def get_objects(self):
+    #    # return super().get_objects().order_by('-created_at')
+    #     return Article.objects.all().order_by('-created_at')
+
+    # def get_queryset(self):
+    #     return Article.objects.all().order_by('-created_at')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        print(context)
+        return context
+
 
 
 class ArticleView(TemplateView):
