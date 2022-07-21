@@ -1,5 +1,7 @@
+from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
+from django.utils.http import urlencode
 from django.views import View
 from django.views.generic import TemplateView, RedirectView, FormView, ListView
 
@@ -36,21 +38,40 @@ class IndexView(ListView):
     model = Article
     template_name = "index.html"
     context_object_name = "articles"
-    ordering = ('-created_at',)
-    paginate_by = 4
-    paginate_orphans = 1
+    ordering = ('created_at',)
+    paginate_by = 2
+
 
     # def get_objects(self):
     #    # return super().get_objects().order_by('-created_at')
     #     return Article.objects.all().order_by('-created_at')
 
-    # def get_queryset(self):
-    #     return Article.objects.all().order_by('-created_at')
+    def get(self, request, *args, **kwargs):
+        self.form = self.get_search_form()
+        self.search_value = self.get_search_value()
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        if self.search_value:
+            return Article.objects.filter(Q(author__contains=self.search_value) | Q(title__contains=self.search_value))
+        return Article.objects.all()
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)
-        print(context)
+        context['form'] = self.form
+        if self.search_value:
+            val = urlencode({'search': self.search_value})
+            context['query'] = val
+            context['search'] = self.search_value
         return context
+
+    def get_search_form(self):
+        return SearchForm(self.request.GET)
+
+    def get_search_value(self):
+        if self.form.is_valid():
+            return self.form.cleaned_data.get("search")
+
 
 
 
