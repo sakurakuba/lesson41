@@ -22,7 +22,7 @@
     <p>Content: {{ article.content }}</p>
     <p>By: {{ article.author }}</p>
 <h4>Comments</h4>
-{% for com in article.comments.all %}
+{% for com in comments %}
 <p>{{ com.text }}</p>
 {% empty %}
 no comments

@@ -18,7 +18,7 @@ from django.urls import path
 from django.views.generic import RedirectView
 from webapp.views import ArticleView, IndexView, delete_article
 from webapp.views import MyRedirectView
-from webapp.base_view import CreateArticle
+from webapp.views import CreateArticle
 from webapp.views import UpdArticle
 
 urlpatterns = [

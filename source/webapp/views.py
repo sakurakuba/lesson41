@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.http import urlencode
 from django.views import View
-from django.views.generic import TemplateView, RedirectView, FormView, ListView
+from django.views.generic import TemplateView, RedirectView, FormView, ListView, DetailView
 
 from .base_view import CustomFormView, CustomListView
 from .forms import ArticleForm, SearchForm
@@ -44,14 +44,14 @@ class IndexView(ListView):
             return self.form.cleaned_data.get("search")
 
 
-class ArticleView(TemplateView):
+class ArticleView(DetailView):
     template_name = 'article_view.html'
+    model = Article
 
     def get_context_data(self, **kwargs):
-        pk = kwargs.get("pk")
-        article = get_object_or_404(Article, pk=pk)
-        kwargs["article"] = article
-        return super().get_context_data(**kwargs)
+        context = super(ArticleView, self).get_context_data(**kwargs)
+        context['comments'] = self.object.comments.order_by('-created_at')
+        return context
 
 
 class MyRedirectView(RedirectView):

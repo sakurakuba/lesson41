@@ -1,9 +1,24 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic import TemplateView
 
 from webapp.forms import ArticleForm
 from webapp.models import Article
+
+
+class DetailView(TemplateView):
+    context_key = 'object'
+    model = None
+    key_kwarg = 'pk'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context[self.context_key] = self.get_object()
+        return context
+
+    def get_object(self):
+        pk = self.kwargs.get(self.key_kwarg)
+        return get_object_or_404(self.model, pk=pk)
 
 
 class CustomFormView(View):
@@ -34,20 +49,6 @@ class CustomFormView(View):
     def form_isvalid(self, form):
         context = self.get_context(form=form)
         return render(self.request, self.template_name, context)
-
-
-class CreateArticle(CustomFormView):
-    form_class = ArticleForm
-    template_name = "article_create.html"
-
-    def form_valid(self, form):
-        tags = form.cleaned_data.pop("tags")
-        self.article = Article.objects.create(**form.cleaned_data)
-        self.article.tags.set(tags)
-        return super().form_valid(form)
-
-    def get_redirect_url(self):
-        return redirect('article_view', pk=self.article.pk)
 
 
 
