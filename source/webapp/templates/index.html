@@ -13,7 +13,7 @@
 
 {% for art in articles %}
     <h3>{{ art.title}}</h3>
-    <p><a href="{% url 'article_view' art.pk %}">Details</a> </p>
+    <p><a href="{{ art.get_absolute_url }}">Details</a> </p>
 
 {% endfor %}
 

@@ -1,6 +1,8 @@
 from django.db import models
 
 # Create your models here.
+from django.urls import reverse
+
 STATUS_CHOICES = [('new', 'brand new'), ('moderated', 'updated'), ('rejected', 'declined')]
 
 
@@ -19,9 +21,13 @@ class Article(BaseModel):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, verbose_name='Status', default=STATUS_CHOICES[0][0])
     tags = models.ManyToManyField("webapp.Tag", related_name="articles", blank=True)
 
-
     def __str__(self):
         return f"{self.id}. {self.title}: {self.author}"
+
+    def get_absolute_url(self):
+        return reverse('article_view', kwargs={"pk": self.pk})
+
+
 
     class Meta:
         db_table = 'articles'

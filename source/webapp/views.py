@@ -3,11 +3,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.http import urlencode
 from django.views import View
-from django.views.generic import TemplateView, RedirectView, FormView, ListView, DetailView
+from django.views.generic import TemplateView, RedirectView, FormView, ListView, DetailView, CreateView
 
 from .base_view import CustomFormView, CustomListView
-from .forms import ArticleForm, SearchForm
-from .models import Article
+from .forms import ArticleForm, SearchForm, CommentForm
+from .models import Article, Comment
 
 
 class IndexView(ListView):
@@ -58,19 +58,10 @@ class MyRedirectView(RedirectView):
     url = "https://google.com"
 
 
-class CreateArticle(CustomFormView):
+class CreateArticle(CreateView):
     form_class = ArticleForm
     template_name = "article_create.html"
 
-    def form_valid(self, form):
-        # tags = form.cleaned_data.pop("tags")
-        # self.article = Article.objects.create(**form.cleaned_data)
-        # self.article.tags.set(tags)
-        self.article = form.save()
-        return super().form_valid(form)
-
-    def get_redirect_url(self):
-        return redirect('article_view', pk=self.article.pk)
 
 
 class UpdArticle(FormView):
@@ -91,7 +82,6 @@ class UpdArticle(FormView):
 
     def get_object(self):
         return get_object_or_404(Article, pk=self.kwargs.get('pk'))
-
 
     def get_form_kwargs(self):
         form_kwargs = super().get_form_kwargs()
@@ -114,3 +104,22 @@ def delete_article(request, pk):
 
 
 
+class CreateCommentView(CreateView):
+    form_class = CommentForm
+    template_name = "comments/create_comment.html"
+
+    def form_valid(self, form):
+        article = get_object_or_404(Article, pk=self.kwargs.get("pk"))
+        form.instance.article = article
+        return super().form_valid(form)
+
+    # def form_valid(self, form):
+    #     article = get_object_or_404(Article, pk=self.kwargs.get("pk"))
+    #     comment = form.save(commit=False)
+    #     comment.article = article
+    #     comment.save()
+    #     form.save_m2m()
+    #     return redirect("article_view", pk=article.pk)
+
+    def get_success_url(self):
+        return reverse("article_view", kwargs={"pk": self.object.article.pk})

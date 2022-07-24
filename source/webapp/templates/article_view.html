@@ -8,6 +8,9 @@
     <a class="nav-link" href="{% url "update_article" article.pk %}">Update Article</a>
 </li>
 <li class="nav-item">
+    <a class="nav-link" href="{% url "article_create_comment" article.pk %}">Add comment</a>
+</li>
+<li class="nav-item">
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#articleDeleteModal">
   Delete
 </button>

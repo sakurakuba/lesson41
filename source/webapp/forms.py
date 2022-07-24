@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import widgets
 
-from .models import Article, STATUS_CHOICES, Tag
+from .models import Article, STATUS_CHOICES, Tag, Comment
 
 
 class ArticleForm(forms.ModelForm):
@@ -34,4 +34,12 @@ class ArticleForm(forms.ModelForm):
 
 class SearchForm(forms.Form):
     search = forms.CharField(max_length=50, required=False, label='Search')
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ["text", "author"]
+
+
 
