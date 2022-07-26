@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %} Update Comment {% endblock %}
+
+{% block content %}
+<h1>Update Comment</h1>
+<form action="" method="post">
+    {% csrf_token %}
+    {% include "partial/form.html" %}
+
+    <input type="submit" value="Update"/>
+    <p><h5><a href="{% url 'article_view' comment.article.pk %}">Return to Article</a></h5></p>
+    <p><h5><a href="{% url 'index' %}">Return to Main</a></h5></p>
+</form>
+{% endblock %}
+

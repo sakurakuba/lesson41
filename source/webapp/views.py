@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.http import urlencode
 from django.views import View
-from django.views.generic import TemplateView, RedirectView, FormView, ListView, DetailView, CreateView
+from django.views.generic import TemplateView, RedirectView, FormView, ListView, DetailView, CreateView, UpdateView
 
 from .base_view import CustomFormView, CustomListView
 from .forms import ArticleForm, SearchForm, CommentForm
@@ -63,35 +63,11 @@ class CreateArticle(CreateView):
     template_name = "article_create.html"
 
 
-
-class UpdArticle(FormView):
+class UpdArticle(UpdateView):
     form_class = ArticleForm
     template_name = "update.html"
+    model = Article
 
-    def dispatch(self, request, *args, **kwargs):
-        self.article = self.get_object()
-        return super().dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['article'] = self.article
-        return context
-
-    def get_success_url(self):
-        return reverse("article_view", kwargs={"pk": self.article.pk})
-
-    def get_object(self):
-        return get_object_or_404(Article, pk=self.kwargs.get('pk'))
-
-    def get_form_kwargs(self):
-        form_kwargs = super().get_form_kwargs()
-        form_kwargs['instance'] = self.article
-        return form_kwargs
-
-    def form_valid(self, form):
-        tags = form.cleaned_data.pop('tags')
-        self.article = form.save()
-        return super().form_valid(form)
 
 
 def delete_article(request, pk):
@@ -120,6 +96,15 @@ class CreateCommentView(CreateView):
     #     comment.save()
     #     form.save_m2m()
     #     return redirect("article_view", pk=article.pk)
+
+    def get_success_url(self):
+        return reverse("article_view", kwargs={"pk": self.object.article.pk})
+
+
+class UpdComment(UpdateView):
+    form_class = CommentForm
+    template_name = "comments/update.html"
+    model = Comment
 
     def get_success_url(self):
         return reverse("article_view", kwargs={"pk": self.object.article.pk})

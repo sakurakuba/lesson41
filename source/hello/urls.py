@@ -21,6 +21,7 @@ from webapp.views import MyRedirectView
 from webapp.views import CreateArticle
 from webapp.views import UpdArticle
 from webapp.views import CreateCommentView
+from webapp.views import UpdComment
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,5 +33,6 @@ urlpatterns = [
     path('article/<int:pk>/delete', delete_article, name='delete_article'),
     path('google/', MyRedirectView.as_view()),
     path('article/<int:pk>/comment/add/', CreateCommentView.as_view(), name='article_create_comment'),
+    path('comments/<int:pk>/update', UpdComment.as_view(), name='update_comment'),
 
 ]
