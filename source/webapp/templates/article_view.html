@@ -28,6 +28,7 @@
 {% for com in comments %}
 <p>{{ com.text }}</p>
 <a href="{% url "update_comment" com.pk %}">Update comment</a>
+<a href="{% url "delete_comment" com.pk %}">Delete comment</a>
 {% empty %}
 no comments
 {% endfor %}

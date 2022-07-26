@@ -1,12 +1,13 @@
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.utils.http import urlencode
 from django.views import View
-from django.views.generic import TemplateView, RedirectView, FormView, ListView, DetailView, CreateView, UpdateView
+from django.views.generic import TemplateView, RedirectView, FormView, ListView, DetailView, CreateView, UpdateView, \
+    DeleteView
 
 from .base_view import CustomFormView, CustomListView
-from .forms import ArticleForm, SearchForm, CommentForm
+from .forms import ArticleForm, SearchForm, CommentForm, ArticleDeleteForm
 from .models import Article, Comment
 
 
@@ -68,15 +69,28 @@ class UpdArticle(UpdateView):
     template_name = "update.html"
     model = Article
 
+    def get_form_class(self):
+        if self.request.GET.get("is_admin"):
+            return ArticleForm
+        return ArticleForm
 
 
-def delete_article(request, pk):
-    article = get_object_or_404(Article, pk=pk)
-    if request.method == 'GET':
-        return render(request, 'delete.html', {'article': article})
-    else:
-        article.delete()
-        return redirect('index')
+
+class DeleteArticle(DeleteView):
+    model = Article
+    template_name = "delete.html"
+    success_url = reverse_lazy("index")
+    form_class = ArticleDeleteForm
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(data=request.POST, instance=self.get_object())
+        if form.is_valid():
+            return self.delete(request, *args, **kwargs)
+        else:
+            return self.get(request, *args, **kwargs)
+
+
+
 
 
 
@@ -105,6 +119,16 @@ class UpdComment(UpdateView):
     form_class = CommentForm
     template_name = "comments/update.html"
     model = Comment
+
+    def get_success_url(self):
+        return reverse("article_view", kwargs={"pk": self.object.article.pk})
+
+
+class DeleteComment(DeleteView):
+    model = Comment
+
+    def get(self, request, *args, **kwargs):
+        return super().delete(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse("article_view", kwargs={"pk": self.object.article.pk})

@@ -42,4 +42,13 @@ class CommentForm(forms.ModelForm):
         fields = ["text", "author"]
 
 
+class ArticleDeleteForm(forms.ModelForm):
+    class Meta:
+        model = Article
+        fields = ["title"]
+
+    def clean_title(self):
+        if self.instance.title != self.cleaned_data.get("title"):
+            raise ValidationError("Title doesn't match")
+        return self.cleaned_data.get("title")
 
