@@ -2,13 +2,13 @@
 {% block title %} Article view {% endblock %}
 {% block nav %}
 <li class="nav-item">
-    <a class="nav-link" href="{% url "create_article" %}">Create Article</a>
+    <a class="nav-link" href="{% url "webapp:create_article" %}">Create Article</a>
 </li>
 <li class="nav-item">
-    <a class="nav-link" href="{% url "update_article" article.pk %}">Update Article</a>
+    <a class="nav-link" href="{% url "webapp:update_article" article.pk %}">Update Article</a>
 </li>
 <li class="nav-item">
-    <a class="nav-link" href="{% url "article_create_comment" article.pk %}">Add comment</a>
+    <a class="nav-link" href="{% url "webapp:article_create_comment" article.pk %}">Add comment</a>
 </li>
 <li class="nav-item">
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#articleDeleteModal">
@@ -27,8 +27,8 @@
 <h4>Comments</h4>
 {% for com in comments %}
 <p>{{ com.text }}</p>
-<a href="{% url "update_comment" com.pk %}">Update comment</a>
-<a href="{% url "delete_comment" com.pk %}">Delete comment</a>
+<a href="{% url "webapp:update_comment" com.pk %}">Update comment</a>
+<a href="{% url "webapp:delete_comment" com.pk %}">Delete comment</a>
 {% empty %}
 no comments
 {% endfor %}
@@ -41,8 +41,8 @@ no comments
 no tags
 {% endfor %}
 
-<p><h5><a href="{% url "index" %}">Return to Main</a></h5></p>
-<div class="modal fade" id="articleDeleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<p><h5><a href="{% url "webapp:index" %}">Return to Main</a></h5></p>
+<div class="modal fade" id="articleDeleteModal" tabwebapp:index="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -54,7 +54,7 @@ no tags
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <form action="{% url 'delete_article' article.pk %}" method="post">
+          <form action="{% url 'webapp:delete_article' article.pk %}" method="post">
             {% csrf_token %}
         <button type="submit" class="btn btn-primary">Yes</button>
           </form>

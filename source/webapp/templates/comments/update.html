@@ -8,8 +8,8 @@
     {% include "partial/form.html" %}
 
     <input type="submit" value="Update"/>
-    <p><h5><a href="{% url 'article_view' comment.article.pk %}">Return to Article</a></h5></p>
-    <p><h5><a href="{% url 'index' %}">Return to Main</a></h5></p>
+    <p><h5><a href="{% url 'webapp:article_view' comment.article.pk %}">Return to Article</a></h5></p>
+    <p><h5><a href="{% url 'webapp:index' %}">Return to Main</a></h5></p>
 </form>
 {% endblock %}
 

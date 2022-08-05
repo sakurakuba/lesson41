@@ -79,7 +79,7 @@ class UpdArticle(UpdateView):
 class DeleteArticle(DeleteView):
     model = Article
     template_name = "delete.html"
-    success_url = reverse_lazy("index")
+    success_url = reverse_lazy("webapp:index")
     form_class = ArticleDeleteForm
 
     def post(self, request, *args, **kwargs):
@@ -112,7 +112,7 @@ class CreateCommentView(CreateView):
     #     return redirect("article_view", pk=article.pk)
 
     def get_success_url(self):
-        return reverse("article_view", kwargs={"pk": self.object.article.pk})
+        return reverse("webapp:article_view", kwargs={"pk": self.object.article.pk})
 
 
 class UpdComment(UpdateView):
@@ -121,7 +121,7 @@ class UpdComment(UpdateView):
     model = Comment
 
     def get_success_url(self):
-        return reverse("article_view", kwargs={"pk": self.object.article.pk})
+        return reverse("webapp:article_view", kwargs={"pk": self.object.article.pk})
 
 
 class DeleteComment(DeleteView):
@@ -131,4 +131,4 @@ class DeleteComment(DeleteView):
         return super().delete(request, *args, **kwargs)
 
     def get_success_url(self):
-        return reverse("article_view", kwargs={"pk": self.object.article.pk})
+        return reverse("webapp:article_view", kwargs={"pk": self.object.article.pk})

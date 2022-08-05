@@ -25,7 +25,7 @@ class Article(BaseModel):
         return f"{self.id}. {self.title}: {self.author}"
 
     def get_absolute_url(self):
-        return reverse('article_view', kwargs={"pk": self.pk})
+        return reverse('webapp:article_view', kwargs={"pk": self.pk})
 
 
 
