@@ -17,9 +17,15 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
+          {% if request.user.is_authenticated %}
           <li class="nav-item">
-    <a class="nav-link" href="{% url "accounts:login" %}">Login</a>
-</li>
+                <a class="nav-link" href="#">Logout</a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url "accounts:login" %}">Login</a>
+            </li>
+          {% endif %}
         {% block nav %}
 
         {% endblock %}
