@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -59,9 +60,14 @@ class MyRedirectView(RedirectView):
     url = "https://google.com"
 
 
-class CreateArticle(CreateView):
+class CreateArticle(LoginRequiredMixin, CreateView):
     form_class = ArticleForm
     template_name = "article_create.html"
+
+    # def dispatch(self, request, *args, **kwargs):
+    #     if request.user.is_authenticated:
+    #         return super().dispatch(request, *args, **kwargs)
+    #     return redirect("accounts:login")
 
 
 class UpdArticle(UpdateView):

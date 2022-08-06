@@ -1,20 +1,22 @@
 {% extends "base.html" %}
 {% block title %} Article view {% endblock %}
 {% block nav %}
-<li class="nav-item">
-    <a class="nav-link" href="{% url "webapp:create_article" %}">Create Article</a>
-</li>
-<li class="nav-item">
-    <a class="nav-link" href="{% url "webapp:update_article" article.pk %}">Update Article</a>
-</li>
-<li class="nav-item">
-    <a class="nav-link" href="{% url "webapp:article_create_comment" article.pk %}">Add comment</a>
-</li>
-<li class="nav-item">
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#articleDeleteModal">
-  Delete
-</button>
-</li>
+{% if request.user.is_authenticated %}
+    <li class="nav-item">
+        <a class="nav-link" href="{% url "webapp:create_article" %}">Create Article</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url "webapp:update_article" article.pk %}">Update Article</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url "webapp:article_create_comment" article.pk %}">Add comment</a>
+    </li>
+    <li class="nav-item">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#articleDeleteModal">
+      Delete
+    </button>
+    </li>
+{% endif %}
 {% endblock %}
 {% block content %}
 {{ search_form}}
