@@ -19,11 +19,14 @@
       <ul class="navbar-nav">
           {% if request.user.is_authenticated %}
           <li class="nav-item">
-                <a class="nav-link" href="{% url "accounts:logout" %}">Logout</a>
+                <a class="nav-link" href="{% url "accounts:logout" %}?next={{ request.get_full_path }}">Logout</a>
             </li>
           {% else %}
             <li class="nav-item">
-                <a class="nav-link" href="{% url "accounts:login" %}">Login</a>
+                <a class="nav-link" href="{% url "accounts:login" %}?next={{ request.get_full_path }}">Login</a>
+            </li>
+          <li class="nav-item">
+                <a class="nav-link" href="{% url "accounts:registration" %}?next={{ request.get_full_path }}">Registration</a>
             </li>
           {% endif %}
         {% block nav %}

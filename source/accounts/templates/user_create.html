@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Create new user{% endblock %}
+
+{% block content %}
+<h1>Registration</h1>
+<form  method="post">
+    {% csrf_token %}
+    {% include 'partial/form.html' %}
+<input type="submit" value="Register"/>
+</form>
+{% endblock %}
