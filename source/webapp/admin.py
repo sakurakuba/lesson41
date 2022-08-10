@@ -15,11 +15,11 @@ class ArticleAdmin(admin.ModelAdmin):
     readonly_fields = ['created_at', 'updated_at']
     # inlines = [TagInline]
 
-
-# class TagsAdmin(admin.ModelAdmin):
-#     inlines = [TagInline]
-
-
-
-# admin.site.register(Tags, TagsAdmin)
+#
+# # class TagsAdmin(admin.ModelAdmin):
+# #     inlines = [TagInline]
+#
+#
+#
+# # admin.site.register(Tags, TagsAdmin)
 admin.site.register(Article, ArticleAdmin)

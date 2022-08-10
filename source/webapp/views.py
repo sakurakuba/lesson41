@@ -60,14 +60,19 @@ class MyRedirectView(RedirectView):
     url = "https://google.com"
 
 
-class CreateArticle(LoginRequiredMixin, CreateView):
+class CreateArticle(CreateView):
     form_class = ArticleForm
     template_name = "article_create.html"
 
-    # def dispatch(self, request, *args, **kwargs):
-    #     if request.user.is_authenticated:
-    #         return super().dispatch(request, *args, **kwargs)
-    #     return redirect("accounts:login")
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated and self.request.user.has_perm("webapp.add_article"):
+            return super().dispatch(request, *args, **kwargs)
+        return redirect("accounts:login")
+
+    def form_valid(self, form):
+        user = self.request.user
+        form.instance.author = user
+        return super().form_valid(form)
 
 
 class UpdArticle(UpdateView):
@@ -106,7 +111,9 @@ class CreateCommentView(CreateView):
 
     def form_valid(self, form):
         article = get_object_or_404(Article, pk=self.kwargs.get("pk"))
+        user = self.request.user
         form.instance.article = article
+        form.instance.author = user
         return super().form_valid(form)
 
     # def form_valid(self, form):

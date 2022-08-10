@@ -14,7 +14,7 @@ class ArticleForm(forms.ModelForm):
 
     class Meta:
         model = Article
-        fields = "__all__"
+        fields = ['title', 'content', 'status', 'tags']
         widgets = {
             "tags": widgets.CheckboxSelectMultiple,
             "content": widgets.Textarea(attrs={"placeholder": "please add text here"})
@@ -39,7 +39,7 @@ class SearchForm(forms.Form):
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ["text", "author"]
+        fields = ["text"]
 
 
 class ArticleDeleteForm(forms.ModelForm):
