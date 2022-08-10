@@ -1,4 +1,5 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.models import Permission
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -20,6 +21,7 @@ class IndexView(ListView):
     paginate_by = 5
 
     def get(self, request, *args, **kwargs):
+        # request.user.user_permissions.add(Permission.objects.get(codename="delete_article"))
         self.form = self.get_search_form()
         self.search_value = self.get_search_value()
         return super().get(request, *args, **kwargs)
@@ -60,14 +62,21 @@ class MyRedirectView(RedirectView):
     url = "https://google.com"
 
 
-class CreateArticle(CreateView):
+class CreateArticle(LoginRequiredMixin, CreateView):
     form_class = ArticleForm
     template_name = "article_create.html"
+    #permission_required = "webapp.add_article"
+    #
+    # def has_permission(self):
+    #     return self.request.user.has_perm("webapp.add_article")
+    #
+    # def handle_no_permission(self):
+    #     return redirect("accounts:login")
 
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated and self.request.user.has_perm("webapp.add_article"):
-            return super().dispatch(request, *args, **kwargs)
-        return redirect("accounts:login")
+    # def dispatch(self, request, *args, **kwargs):
+    #     if request.user.is_authenticated and self.request.user.has_perm("webapp.add_article"):
+    #         return super().dispatch(request, *args, **kwargs)
+    #     return redirect("accounts:login")
 
     def form_valid(self, form):
         user = self.request.user
@@ -75,23 +84,26 @@ class CreateArticle(CreateView):
         return super().form_valid(form)
 
 
-class UpdArticle(UpdateView):
+class UpdArticle(PermissionRequiredMixin, UpdateView):
     form_class = ArticleForm
     template_name = "update.html"
     model = Article
 
-    def get_form_class(self):
-        if self.request.GET.get("is_admin"):
-            return ArticleForm
-        return ArticleForm
+    def has_permission(self):
+        return self.request.user.has_perm("webapp.change_article") or \
+               self.request.user == self.get_object().author
 
 
 
-class DeleteArticle(DeleteView):
+class DeleteArticle(PermissionRequiredMixin, DeleteView):
     model = Article
     template_name = "delete.html"
     success_url = reverse_lazy("webapp:index")
     form_class = ArticleDeleteForm
+    permission_required = "webapp.delete_article"
+
+    def has_permission(self):
+        return super().has_permission() or self.request.user == self.get_object().author
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(data=request.POST, instance=self.get_object())
@@ -128,10 +140,13 @@ class CreateCommentView(CreateView):
         return reverse("webapp:article_view", kwargs={"pk": self.object.article.pk})
 
 
-class UpdComment(UpdateView):
+class UpdComment(UserPassesTestMixin, UpdateView):
     form_class = CommentForm
     template_name = "comments/update.html"
     model = Comment
+
+    def test_func(self):
+        return self.get_object().author == self.request.user or self.request.user.has_perm('webapp.change_comment')
 
     def get_success_url(self):
         return reverse("webapp:article_view", kwargs={"pk": self.object.article.pk})
